@@ -1,0 +1,30 @@
+GET http://localhost:3000/usuarios
+###
+
+GET http://localhost:3000/
+
+###
+GET http://localhost:3000/usuarios/Ryu
+
+###
+POST http://localhost:3000/usuarios
+Content-Type: application/json
+
+{  
+  "nombre": "Data",
+  "edad": 24,
+  "lugarProcedencia": "Moratalaz"
+}
+
+###
+PUT http://localhost:3000/usuarios/Ryu
+Content-Type: application/json
+
+{  
+  "nombre": "Luiscar",
+  "edad": 26,
+  "lugarProcedencia": "Marte"
+}
+
+###
+DELETE http://localhost:3000/usuarios/Guile

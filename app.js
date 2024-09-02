@@ -17,7 +17,7 @@ app.get('/', (req, res) => {
         <h1>Lista de Usuarios</h1>
         <ul>
         ${usuarios.map(usuario => 
-            `<li> id: ${usuario.id} | nombre: ${usuario.nombre}</li>`).join('')
+            `<li> Id: ${usuario.id} | Nombre: ${usuario.nombre} | Procedencia: ${usuario.lugarProcedencia}</li>`).join('')
         }
         </ul>
         <form action="/usuarios" method="POST">
@@ -38,10 +38,10 @@ app.get('/usuarios', (req, res) => {
 
 app.get('/usuarios/:nombre', (req, res) => {
     const usuario = usuarios.find(u => u.nombre.toLowerCase() === req.params.nombre.toLowerCase());
-    if (usuario) {
-        res.json(usuario);
+    if (!usuario) {
+        res.status(404).json({error:'Usuario no encontrado'});
     } else {
-        res.status(404).send('Usuario no encontrado');
+        res.json(usuario);
     }
 });
 
@@ -65,18 +65,18 @@ app.put('/usuarios/:nombre', (req, res) => {
         };
         res.json(usuarios[index]);
     } else {
-        res.status(404).send('Usuario no encontrado');
+        res.status(404).json({error:'Usuario no encontrado'});
     }
 });
 
 app.delete('/usuarios/:nombre', (req, res) => {
-    const initialLength = usuarios.length;
-    usuarios = usuarios.filter(u => u.nombre.toLowerCase() !== req.params.nombre.toLowerCase());
+    const usuario = usuarios.length;
+    usuarios = usuarios.filter(usuarios => usuarios.nombre.toLowerCase() !== req.params.nombre.toLowerCase());
     
-    if (usuarios.length < initialLength) {
+    if (usuarios.length < usuario) {
         res.send('Usuario eliminado');
     } else {
-        res.status(404).send('Usuario no encontrado');
+        res.status(404).json({error:'Usuario no encontrado'});
     }
 });
 

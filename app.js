@@ -16,7 +16,7 @@ app.get('/', (req, res) => {
     res.send(`
         <h1>Lista de Usuarios</h1>
         <ul>
-        ${usuarios.map((usuario) => 
+        ${usuarios.map(usuario => 
             `<li> id: ${usuario.id} | nombre: ${usuario.nombre}</li>`).join('')
         }
         </ul>
@@ -32,6 +32,19 @@ app.get('/', (req, res) => {
     );
 });
 
+app.get('/usuarios', (req, res) => {
+    res.json(usuarios);
+});
+
+app.get('/usuarios/:nombre', (req, res) => {
+    const usuario = usuarios.find(u => u.nombre.toLowerCase() === req.params.nombre.toLowerCase());
+    if (usuario) {
+        res.json(usuario);
+    } else {
+        res.status(404).send('Usuario no encontrado');
+    }
+});
+
 app.post('/usuarios', (req, res) => {
     const nuevoUsuario = {
         id: usuarios.length + 1,
@@ -43,7 +56,31 @@ app.post('/usuarios', (req, res) => {
     res.redirect('/');
 });
 
-const PORT = 3000
+app.put('/usuarios/:nombre', (req, res) => {
+    const index = usuarios.findIndex(u => u.nombre.toLowerCase() === req.params.nombre.toLowerCase());
+    if (index !== -1) {
+        usuarios[index] = {
+            ...usuarios[index],
+            ...req.body
+        };
+        res.json(usuarios[index]);
+    } else {
+        res.status(404).send('Usuario no encontrado');
+    }
+});
+
+app.delete('/usuarios/:nombre', (req, res) => {
+    const initialLength = usuarios.length;
+    usuarios = usuarios.filter(u => u.nombre.toLowerCase() !== req.params.nombre.toLowerCase());
+    
+    if (usuarios.length < initialLength) {
+        res.send('Usuario eliminado');
+    } else {
+        res.status(404).send('Usuario no encontrado');
+    }
+});
+
+const PORT = 3000;
 app.listen(PORT, () => {
-  console.log(`El servidor está escuchando en el puerto http://localhost:${PORT}`)
+  console.log(`El servidor está escuchando en el puerto http://localhost:${PORT}`);
 });
